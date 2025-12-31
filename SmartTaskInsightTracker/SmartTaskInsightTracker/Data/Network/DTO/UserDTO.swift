@@ -17,8 +17,8 @@ struct UserDTO: Decodable {
 }
 
 extension UserDTO {
-    func toEntity() -> UserEntity {
-        UserEntity(
+    func toEntity() -> User {
+        User(
             id: id,
             name: name,
             username: username,

@@ -6,5 +6,5 @@
 //
 
 protocol UserRepository {
-    func fetchUsers() async throws -> [UserEntity]
+    func fetchUsers() async throws -> [User]
 }

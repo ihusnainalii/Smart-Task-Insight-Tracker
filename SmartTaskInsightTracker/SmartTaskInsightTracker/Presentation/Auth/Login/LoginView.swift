@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
+    @Environment(\.appContainer) private var container
     @StateObject private var viewModel: LoginViewModel
     @State private var showUsers = false
     @State private var errorMessage: String? = nil
@@ -73,7 +74,13 @@ struct LoginView: View {
         }
         .padding()
         .navigationDestination(isPresented: $showUsers) {
-            
+            UsersListView(
+                viewModel: UsersListViewModel(fetchUsersUseCase: container.fetchUsersUseCase)
+            ) { selectedUserID in
+                viewModel.userID = "\(selectedUserID)"
+                showUsers = false
+                viewModel.login()
+            }
         }
         .onChange(of: viewModel.state) { _, newState in
             switch newState {

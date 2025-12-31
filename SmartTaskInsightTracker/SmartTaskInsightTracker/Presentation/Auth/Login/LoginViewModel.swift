@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Combine
 
 final class LoginViewModel: ObservableObject {
 
@@ -14,7 +13,7 @@ final class LoginViewModel: ObservableObject {
     @Published var userID: String = ""
 
     // MARK: - Output
-    @Published var state: LoginState = .idle
+    @Published var state: ViewState = .idle
 
     // MARK: - Dependencies
     private let loginUseCase: LoginUseCase

@@ -8,35 +8,41 @@
 import SwiftUI
 
 struct HomeView: View {
-
+    
     let userID: Int?
     let onLogout: () -> Void
-
+    @Environment(\.appContainer) private var container
+    
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 24) {
-                Text("Welcome!")
-                    .font(.largeTitle.bold())
-
-                if let id = userID {
-                    Text("Logged in as User ID: \(id)")
-                        .font(.title3)
-                        .foregroundColor(.secondary)
-                } else {
-                    Text("User not found")
-                        .foregroundColor(.red)
-                }
-                
-                Button {
-                    onLogout()
-                } label: {
-                    Text("Logout")
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.red)
+        TabView {
+            TodosView(
+                viewModel: container.makeTodosViewModel()
+            )
+            .tabItem {
+                Label("Todos", systemImage: "checklist")
             }
-            .padding()
-            .navigationTitle("Home")
+            
+            PostsView(
+                viewModel: container.makePostsViewModel()
+            )
+            .tabItem {
+                Label("Posts", systemImage: "doc.text")
+            }
+            
+            AlbumsView(
+                viewModel: container.makeAlbumsViewModel()
+            )
+            .tabItem {
+                Label("Albums", systemImage: "photo.on.rectangle")
+            }
+            
+            ProfileView(
+                viewModel: container.makeProfileViewModel()
+            )
+            .tabItem {
+                Label("Profile", systemImage: "person.circle")
+            }
         }
+        .tint(.brand)
     }
 }

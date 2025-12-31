@@ -8,42 +8,60 @@
 import Foundation
 
 final class AppContainer {
-
-    // MARK: - Session & Repositories
-    private lazy var sessionStore: SessionStore = {
+    
+    // MARK: - Network
+    private var baseURL: URL {
+        guard
+            let baseURLString = Bundle.main.object(
+                forInfoDictionaryKey: "BASE_URL"
+            ) as? String,
+            let url = URL(string: baseURLString)
+        else {
+            fatalError("❌ BASE_URL not set in xcconfig / Info.plist")
+        }
+        return url
+    }
+    
+    private lazy var apiClient: APIClient = {
+        APIClient(
+            baseURL: baseURL
+        )
+    }()
+    
+    // MARK: - Session
+    lazy var sessionStore: SessionStore = {
         SessionStore()
     }()
-
+    
+    // MARK: - Repositories
     lazy var authRepository: AuthRepository = {
         AuthRepositoryImpl(sessionStore: sessionStore)
     }()
-
-//    lazy var userRepository: UserRepository = {
-//        UserRepositoryImpl(apiClient: apiClient)
-//    }()
-//
-//    // MARK: - Network
-//    private lazy var apiClient: APIClient = {
-//        APIClient()
-//    }()
-
+    
+    lazy var userRepository: UserRepository = {
+        UserRepositoryImpl(
+            apiClient: apiClient,
+            container: self
+        )
+    }()
+    
     // MARK: - UseCases
     lazy var loginUseCase: LoginUseCase = {
         LoginUseCase(authRepository: authRepository)
     }()
-
+    
     lazy var logoutUseCase: LogoutUseCase = {
         LogoutUseCase(authRepository: authRepository)
     }()
-
+    
     lazy var getSavedUserUseCase: GetSavedUserUseCase = {
         GetSavedUserUseCase(authRepository: authRepository)
     }()
-
-//    lazy var fetchUsersUseCase: FetchUsersUseCase = {
-//        FetchUsersUseCase(userRepository: userRepository)
-//    }()
-
+    
+    lazy var fetchUsersUseCase: FetchUsersUseCase = {
+        FetchUsersUseCaseImpl(userRepository: userRepository)
+    }()
+    
     // MARK: - ViewModels
     func makeLoginViewModel() -> LoginViewModel {
         LoginViewModel(
@@ -51,12 +69,24 @@ final class AppContainer {
             getSavedUserUseCase: getSavedUserUseCase
         )
     }
+    
+    func makeUsersListViewModel() -> UsersListViewModel {
+        UsersListViewModel(fetchUsersUseCase: fetchUsersUseCase)
+    }
+    
+    func makeTodosViewModel() -> TodosViewModel {
+        TodosViewModel()
+    }
 
-//    func makeUsersListViewModel() -> UsersListViewModel {
-//        UsersListViewModel(fetchUsersUseCase: fetchUsersUseCase)
-//    }
-//
-//    func makeHomeViewModel() -> HomeViewModel {
-//        HomeViewModel(logoutUseCase: logoutUseCase)
-//    }
+    func makePostsViewModel() -> PostsViewModel {
+        PostsViewModel()
+    }
+
+    func makeAlbumsViewModel() -> AlbumsViewModel {
+        AlbumsViewModel()
+    }
+
+    func makeProfileViewModel() -> ProfileViewModel {
+        ProfileViewModel()
+    }
 }
