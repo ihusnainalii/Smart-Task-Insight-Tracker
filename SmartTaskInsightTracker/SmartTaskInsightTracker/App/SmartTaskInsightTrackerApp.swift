@@ -9,12 +9,16 @@ import SwiftUI
 
 @main
 struct SmartTaskInsightTrackerApp: App {
+    
     let persistenceController = PersistenceController.shared
+    let container = AppContainer()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppCoordinatorView()
+                .loadView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environment(\.appContainer, container)
         }
     }
 }

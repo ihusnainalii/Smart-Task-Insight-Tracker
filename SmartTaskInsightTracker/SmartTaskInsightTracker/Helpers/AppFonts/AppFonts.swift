@@ -36,6 +36,7 @@ extension Font {
     static let poppinsExtraBold18 = Font.custom(PoppinsFonts.extraBold.name, size: 18)
     static let poppinsExtraBold20 = Font.custom(PoppinsFonts.extraBold.name, size: 20)
     static let poppinsExtraBold24 = Font.custom(PoppinsFonts.extraBold.name, size: 24)
+    static let poppinsExtraBold32 = Font.custom(PoppinsFonts.extraBold.name, size: 32)
     
     // bold
     static let poppinsBold12 = Font.custom(PoppinsFonts.bold.name, size: 12)
@@ -43,7 +44,12 @@ extension Font {
     static let poppinsBold16 = Font.custom(PoppinsFonts.bold.name, size: 16)
     static let poppinsBold18 = Font.custom(PoppinsFonts.bold.name, size: 18)
     static let poppinsBold20 = Font.custom(PoppinsFonts.bold.name, size: 20)
+    static let poppinsBold22 = Font.custom(PoppinsFonts.bold.name, size: 22)
     static let poppinsBold24 = Font.custom(PoppinsFonts.bold.name, size: 24)
+    static let poppinsBold26 = Font.custom(PoppinsFonts.bold.name, size: 26)
+    static let poppinsBold28 = Font.custom(PoppinsFonts.bold.name, size: 28)
+    static let poppinsBold30 = Font.custom(PoppinsFonts.bold.name, size: 30)
+    static let poppinsBold32 = Font.custom(PoppinsFonts.bold.name, size: 32)
     
     // semi bold
     static let poppinsSemiBold10 = Font.custom(PoppinsFonts.semiBold.name, size: 10)

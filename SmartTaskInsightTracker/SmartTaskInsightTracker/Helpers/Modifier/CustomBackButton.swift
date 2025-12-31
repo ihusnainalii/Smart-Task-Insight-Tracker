@@ -18,9 +18,9 @@ struct CustomBackButton: ViewModifier {
                     Button {
                         dismiss()
                     } label: {
-                        Image(.fiArrowLeft)
-                            .resizable()
-                            .frame(width: 24, height: 24, alignment: .center)
+//                        Image(.fiArrowLeft)
+//                            .resizable()
+//                            .frame(width: 24, height: 24, alignment: .center)
                     }
                 }
             }
