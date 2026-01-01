@@ -6,7 +6,7 @@
 //
 
 protocol AuthRepository {
-    func saveUserID(_ id: Int)
-    func getUserID() -> Int?
-    func logout()
+    func login(with email: String) async throws
+    func logout() async throws
+    func getSavedUser() async throws -> User
 }

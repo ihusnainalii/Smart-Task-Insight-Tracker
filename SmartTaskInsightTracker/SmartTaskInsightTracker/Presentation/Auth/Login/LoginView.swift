@@ -27,17 +27,17 @@ struct LoginView: View {
                 Text("Sign in to your\nAccount")
                     .font(of: .poppinsBold32, with: .neutralDark)
                 
-                Text("Enter user id for which you need to use app...")
+                Text("Enter user email for which you need to use app...")
                     .font(of: .poppinsRegular12, with: .neutralDark)
             }
             
             Spacer()
             
             CustomTextField(
-                title: "User ID",
-                placeholder: "Enter User ID...",
+                title: "Email Address",
+                placeholder: "Enter email Address...",
                 placeholderColor: .brand,
-                text: $viewModel.userID,
+                text: $viewModel.email,
                 errorMessage: errorMessage
             )
             
@@ -53,34 +53,35 @@ struct LoginView: View {
             }
             
             Button {
-                viewModel.login()
+                showUsers = false
+                Task {
+                    await viewModel.login()
+                }
             } label: {
                 Text("Login")
             }
             .buttonStyle(.primary(size: .normal))
-            .disabled(viewModel.userID.isEmpty)
-            
-            Spacer()
-            
-            // Show error message
-            if case .error(let message) = viewModel.state {
-                Text(message)
-                    .foregroundColor(.red)
-                    .onAppear {
-                        errorMessage = message
-                    }
+            .disabled(!viewModel.email.isValidEmail)
+            .applyIf(viewModel.state == .loading) { button in
+                button.overlay {
+                    ProgressView()
+                }
             }
             
+            Spacer()
         }
         .padding()
         .navigationDestination(isPresented: $showUsers) {
             UsersListView(
                 viewModel: UsersListViewModel(fetchUsersUseCase: container.fetchUsersUseCase)
-            ) { selectedUserID in
-                viewModel.userID = "\(selectedUserID)"
+            ) { selectedUserEmail in
+                errorMessage = nil
+                viewModel.email = "\(selectedUserEmail)"
                 showUsers = false
-                viewModel.login()
             }
+        }
+        .onChange(of: viewModel.email) {
+            errorMessage = viewModel.email.isValidEmail ? nil : "Enter a valid email address"
         }
         .onChange(of: viewModel.state) { _, newState in
             switch newState {
@@ -97,8 +98,10 @@ struct LoginView: View {
 }
 
 #Preview {
-    let authRepository = AuthRepositoryImpl(sessionStore: SessionStore())
-    LoginView(viewModel: LoginViewModel(loginUseCase: LoginUseCase(authRepository: authRepository),
-                                        getSavedUserUseCase: GetSavedUserUseCase(authRepository: authRepository)), isLoggedIn: .constant(false))
+    let authRepository = AuthRepositoryImpl(apiClient: APIClient(baseURL: URL(string: "")!),
+                                            sessionStore: SessionStore(), container: AppContainer())
+    LoginView(viewModel: LoginViewModel(loginUseCase: LoginUseCaseImpl(authRepository: authRepository),
+                                        getSavedUserUseCase: GetSavedUserUseCaseImpl(authRepository: authRepository)),
+              isLoggedIn: .constant(false))
     .loadView()
 }

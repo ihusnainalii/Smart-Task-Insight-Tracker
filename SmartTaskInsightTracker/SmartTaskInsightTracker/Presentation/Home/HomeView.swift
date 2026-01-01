@@ -9,7 +9,6 @@ import SwiftUI
 
 struct HomeView: View {
     
-    let userID: Int?
     let onLogout: () -> Void
     @Environment(\.appContainer) private var container
     
@@ -37,7 +36,8 @@ struct HomeView: View {
             }
             
             ProfileView(
-                viewModel: container.makeProfileViewModel()
+                viewModel: container.makeProfileViewModel(),
+                onLogout: onLogout
             )
             .tabItem {
                 Label("Profile", systemImage: "person.circle")

@@ -10,9 +10,9 @@ import SwiftUI
 struct UsersListView: View {
 
     @StateObject private var viewModel: UsersListViewModel
-    var onSelectUser: ((Int) -> Void)?
+    var onSelectUser: ((String) -> Void)?
 
-    init(viewModel: UsersListViewModel, onSelectUser: ((Int) -> Void)? = nil) {
+    init(viewModel: UsersListViewModel, onSelectUser: ((String) -> Void)? = nil) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.onSelectUser = onSelectUser
     }
@@ -28,7 +28,7 @@ struct UsersListView: View {
             case .success:
                 List(viewModel.users, id: \.id) { user in
                     Button {
-                        onSelectUser?(user.id)
+                        onSelectUser?(user.email)
                     } label: {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
@@ -39,7 +39,7 @@ struct UsersListView: View {
                                     .foregroundColor(.gray)
                             }
                             Spacer()
-                            Text("#\(user.id)")
+                            Text("#\(user.username)")
                                 .foregroundColor(.brand)
                         }
                         .padding(.vertical, 8)

@@ -5,7 +5,11 @@
 //  Created by Husnain Ali - ILI on 31/12/2025.
 //
 
-final class LoginUseCase {
+protocol LoginUseCase {
+    func execute(with email: String) async throws
+}
+
+final class LoginUseCaseImpl: LoginUseCase {
 
     private let authRepository: AuthRepository
 
@@ -13,8 +17,8 @@ final class LoginUseCase {
         self.authRepository = authRepository
     }
 
-    func execute(userID: Int) {
-        authRepository.saveUserID(userID)
+    func execute(with email: String) async throws {
+        try await authRepository.login(with: email)
     }
 }
 

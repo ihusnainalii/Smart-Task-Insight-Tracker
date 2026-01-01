@@ -19,7 +19,7 @@ final class APIClient {
 
     func request<T: APIRequest>(_ request: T) async throws -> T.Response {
         // Build URL
-        guard var urlComponents = URLComponents(url: baseURL.appendingPathComponent(request.path.rawValue), resolvingAgainstBaseURL: false) else {
+        guard var urlComponents = URLComponents(url: baseURL.appendingPathComponent(request.path.endpoint), resolvingAgainstBaseURL: false) else {
             throw APIError.invalidURL
         }
         urlComponents.queryItems = request.queryParameters
@@ -34,7 +34,7 @@ final class APIClient {
         urlRequest.httpBody = request.body
         urlRequest.allHTTPHeaderFields = request.headers
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         do {
             let (data, response) = try await urlSession.data(for: urlRequest)
 

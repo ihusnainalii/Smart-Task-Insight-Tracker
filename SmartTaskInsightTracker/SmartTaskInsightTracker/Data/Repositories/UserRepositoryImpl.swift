@@ -19,26 +19,29 @@ final class UserRepositoryImpl: UserRepository {
     }
     
     func fetchUsers() async throws -> [User] {
-        
-        let headers: [String: String]? = {
-            guard
-                let userID = container.sessionStore.getUserID(),
-                let authHeader = APIConfig.Headers.authorization(with: String(userID))
-            else {
-                return nil
-            }
+        do {
+            let headers: [String: String]? = await {
+                guard
+                    let userID = try? await container.sessionStore.getUserID(),
+                    let authHeader = APIConfig.Headers.authorization(with: String(userID))
+                else {
+                    return nil
+                }
+                
+                return ["Authorization": authHeader]
+            }()
             
-            return ["Authorization": authHeader]
-        }()
-        
-        let request = DynamicAPIRequest<[UserDTO]>(
-            path: .users,
-            method: .get,
-            headers: headers
-        )
-        
-        return try await apiClient.request(request).map { UserDTO in
-            UserDTO.toEntity()
+            let request = DynamicAPIRequest<[UserDTO]>(
+                path: .users,
+                method: .get,
+                headers: headers
+            )
+            
+            return try await apiClient.request(request).map { UserDTO in
+                UserDTO.toEntity()
+            }
+        } catch {
+            throw error
         }
     }
 }

@@ -15,7 +15,7 @@ struct SmartTaskInsightTrackerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AppCoordinatorView()
+            AppCoordinatorView(container: container)
                 .loadView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environment(\.appContainer, container)

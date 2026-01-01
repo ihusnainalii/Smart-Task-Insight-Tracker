@@ -29,13 +29,17 @@ final class AppContainer {
     }()
     
     // MARK: - Session
-    lazy var sessionStore: SessionStore = {
+    lazy var sessionStore: SessionStoreProtocol = {
         SessionStore()
     }()
     
     // MARK: - Repositories
     lazy var authRepository: AuthRepository = {
-        AuthRepositoryImpl(sessionStore: sessionStore)
+        AuthRepositoryImpl(
+            apiClient: apiClient,
+            sessionStore: sessionStore,
+            container: self
+        )
     }()
     
     lazy var userRepository: UserRepository = {
@@ -47,15 +51,15 @@ final class AppContainer {
     
     // MARK: - UseCases
     lazy var loginUseCase: LoginUseCase = {
-        LoginUseCase(authRepository: authRepository)
+        LoginUseCaseImpl(authRepository: authRepository)
     }()
     
     lazy var logoutUseCase: LogoutUseCase = {
-        LogoutUseCase(authRepository: authRepository)
+        LogoutUseCaseImpl(authRepository: authRepository)
     }()
     
     lazy var getSavedUserUseCase: GetSavedUserUseCase = {
-        GetSavedUserUseCase(authRepository: authRepository)
+        GetSavedUserUseCaseImpl(authRepository: authRepository)
     }()
     
     lazy var fetchUsersUseCase: FetchUsersUseCase = {
@@ -77,16 +81,16 @@ final class AppContainer {
     func makeTodosViewModel() -> TodosViewModel {
         TodosViewModel()
     }
-
+    
     func makePostsViewModel() -> PostsViewModel {
         PostsViewModel()
     }
-
+    
     func makeAlbumsViewModel() -> AlbumsViewModel {
         AlbumsViewModel()
     }
-
+    
     func makeProfileViewModel() -> ProfileViewModel {
-        ProfileViewModel()
+        ProfileViewModel(getUserUseCase: getSavedUserUseCase)
     }
 }
