@@ -9,6 +9,12 @@ import Foundation
 
 final class AppContainer {
     
+    private var networkLogger: NetworkLogger {
+        #if DEBUG
+        ConsoleNetworkLogger()
+        #endif
+    }
+    
     // MARK: - Network
     private var baseURL: URL {
         guard
@@ -24,7 +30,8 @@ final class AppContainer {
     
     private lazy var apiClient: APIClient = {
         APIClient(
-            baseURL: baseURL
+            baseURL: baseURL,
+            logger: networkLogger
         )
     }()
     

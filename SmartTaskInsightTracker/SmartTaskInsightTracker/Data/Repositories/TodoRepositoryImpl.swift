@@ -22,11 +22,8 @@ final class TodoRepositoryImpl: TodoRepository {
         }
         
         let request = DynamicAPIRequest<[TodoDTO]>(
-            path: .todos,
-            method: .get,
-            queryParameters: [
-                APIConfig.Queries.userId("\(userID)")
-            ]
+            path: .todos("\(userID)"),
+            method: .get
         )
         
         return try? await apiClient.request(request).map { $0.toEntity() }

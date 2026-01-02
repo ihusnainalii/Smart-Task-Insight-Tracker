@@ -8,22 +8,82 @@
 import SwiftUI
 
 struct CustomizeNavigation: ViewModifier {
-    
+
     var navigationTitle: String
-    
-    func body(content: Content) -> some View {
+    var enableBackButton: Bool
+    var trailingItem: AnyView?
+
+    func body(
+        content: Content
+    ) -> some View {
         content
-            .navigationTitle(navigationTitle)
+            .navigationTitle(
+                navigationTitle
+            )
             .navigationBarBackButtonHidden()
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarColorScheme(.light, for: .navigationBar)
-            .toolbarBackground(.white, for: .navigationBar)
-            .customBackButton()
+            .navigationBarTitleDisplayMode(
+                .inline
+            )
+            .toolbarBackground(
+                .visible,
+                for: .navigationBar
+            )
+            .toolbarColorScheme(
+                .light,
+                for: .navigationBar
+            )
+            .toolbarBackground(
+                .white,
+                for: .navigationBar
+            )
+            .toolbar {
+                if let trailingItem {
+                    ToolbarItem(
+                        placement: .topBarTrailing
+                    ) {
+                        trailingItem
+                    }
+                }
+            }
+            .applyIf(
+                enableBackButton
+            ) { view in
+                view.customBackButton()
+            }
     }
 }
 
 extension View {
-    func customizeNavigation(with title: String) -> some View {
-        self.modifier(CustomizeNavigation(navigationTitle: title))
+    func customizeNavigation(
+        with title: String,
+        enableBackButton: Bool
+    ) -> some View {
+        self.modifier(
+            CustomizeNavigation(navigationTitle: title,
+            enableBackButton: enableBackButton)
+        )
     }
+    
+    func customizeNavigation(
+        with title: String
+    ) -> some View {
+        self.modifier(
+            CustomizeNavigation(navigationTitle: title,
+            enableBackButton: true)
+        )
+    }
+    
+    func customizeNavigation(
+            with title: String,
+            enableBackButton: Bool = true,
+            trailingItem: AnyView? = nil
+        ) -> some View {
+            self.modifier(
+                CustomizeNavigation(
+                    navigationTitle: title,
+                    enableBackButton: enableBackButton,
+                    trailingItem: trailingItem
+                )
+            )
+        }
 }

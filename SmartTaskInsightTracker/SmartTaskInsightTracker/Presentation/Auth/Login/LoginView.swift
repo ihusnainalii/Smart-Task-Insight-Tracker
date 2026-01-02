@@ -98,7 +98,7 @@ struct LoginView: View {
 }
 
 #Preview {
-    let authRepository = AuthRepositoryImpl(apiClient: APIClient(baseURL: URL(string: "")!),
+    let authRepository = AuthRepositoryImpl(apiClient: APIClient(baseURL: URL(string: "")!, logger: ConsoleNetworkLogger()),
                                             sessionStore: SessionStore(), container: AppContainer())
     LoginView(viewModel: LoginViewModel(loginUseCase: LoginUseCaseImpl(authRepository: authRepository),
                                         getSavedUserUseCase: GetSavedUserUseCaseImpl(authRepository: authRepository)),

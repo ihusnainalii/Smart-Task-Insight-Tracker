@@ -7,7 +7,7 @@
 
 enum APIRoute {
     case users
-    case todos
+    case todos(String)
 }
 
 extension APIRoute {
@@ -15,8 +15,8 @@ extension APIRoute {
         switch self {
         case .users:
             return "/users"
-        case .todos:
-            return "/todos"
+        case .todos(let userID):
+            return "/users/\(userID)/todos"
         }
     }
 }
