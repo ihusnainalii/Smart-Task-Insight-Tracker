@@ -35,6 +35,10 @@ struct APIConfig {
             URLQueryItem(name: "search", value: value)
         }
         
+        static func userId(_ value: String) -> URLQueryItem {
+            URLQueryItem(name: "userId", value: value)
+        }
+        
         static func email(_ value: String) -> URLQueryItem {
             URLQueryItem(name: "email", value: value)
         }

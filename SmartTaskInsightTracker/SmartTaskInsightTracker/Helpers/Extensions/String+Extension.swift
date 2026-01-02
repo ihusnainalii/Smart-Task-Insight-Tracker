@@ -17,4 +17,8 @@ extension String {
         let predicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         return predicate.evaluate(with: self)
     }
+    
+    func prefixSafe(_ count: Int = 1) -> String {
+        String(prefix(count))
+    }
 }

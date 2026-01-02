@@ -19,99 +19,131 @@ struct ProfileView: View {
     }
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                if viewModel.state == .loading {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                        .padding()
-                } else if let user = viewModel.user {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Name: \(user.name)")
-                        Text("Username: \(user.username)")
-                        Text("Email: \(user.email)")
-                        Text("City: \(user.city)")
-                        Text("Company: \(user.companyName)")
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(UIColor.secondarySystemBackground))
-                    .cornerRadius(12)
-                    .shadow(radius: 2)
-                    
-                    HStack(spacing: 20) {
-                        Button("Edit Details") {
-                            viewModel.isEditing = true
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        
-                        Spacer()
-                        Button {
-                            onLogout()
-                        } label: {
-                            Text("Logout")
-                        }
-                        .buttonStyle(.primary(size: .normal))
-                    }
-                    .padding(.horizontal)
-                } else if let error = viewModel.errorMessage {
-                    Text(error)
-                        .foregroundColor(.red)
-                }
-                
-                Spacer()
+        
+        VStack(spacing: 0) {
+            
+            headerSection
+            
+            Spacer()
+            
+            Text("Version 1.0.0")
+                .font(of: .poppinsRegular12, with: .gray)
+                .padding(.bottom, 5)
+            
+            Button {
+                onLogout()
+            } label: {
+                Text("Logout")
             }
+            .buttonStyle(.primary(size: .normal))
             .padding()
-            .navigationTitle("Profile")
-            .task {
-                await viewModel.fetchUser()
-            }
-            .sheet(isPresented: $viewModel.isEditing) {
-                if let user = viewModel.user {
-                    EditUserView(user: user) { updatedUser in
-                        viewModel.isEditing = false
-                    }
-                }
-            }
+        }
+        .background(
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
+        )
+        .task {
+            await viewModel.fetchUser()
         }
     }
-}
-
-struct EditUserView: View {
-    @State var user: User
-    var onSave: (User) -> Void
-    @Environment(\.dismiss) var dismiss
     
-    var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("User Details")) {
-                    TextField("Name", text: $user.name)
-                    TextField("Username", text: $user.username)
-                    TextField("Email", text: $user.email)
-                    TextField("City", text: $user.city)
-                    TextField("Company", text: $user.companyName)
-                }
-            }
-            .navigationTitle("Edit Profile")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        onSave(user)
-                        dismiss()
-                    }
+    // MARK: - Header Section
+    private var headerSection: some View {
+        ZStack {
+            // Gradient background
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.brand,
+                    Color.brand
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            
+            // Decorative circles
+            Circle()
+                .fill(Color.white.opacity(0.1))
+                .frame(width: 200, height: 200)
+                .offset(x: -80, y: -50)
+            
+            Circle()
+                .fill(Color.white.opacity(0.1))
+                .frame(width: 150, height: 150)
+                .offset(x: 100, y: 80)
+            
+            VStack(spacing: 12) {
+                // Profile image
+                if viewModel.state == .loading {
+                    ProgressView()
+                        .tint(.white)
+                        .scaleEffect(1.2)
+                        .frame(width: 80, height: 80)
+                } else {
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 80, height: 80)
+                        .applyIf(viewModel.user != nil, { view in
+                            view.overlay(
+                                Text(viewModel.user?.name.prefixSafe() ?? "A")
+                                    .font(of: .poppinsBold32, with: .brand)
+                                    .frame(width: 40, height: 40)
+                            )
+                        })
+                        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
                 }
                 
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
+                // User info
+                if let user = viewModel.user {
+                    VStack(spacing: 0) {
+                        Text(user.name)
+                            .font(of: .poppinsMedium20, with: .white)
+                        Text(user.email)
+                            .font(of: .poppinsRegular14, with: .white.opacity(0.9))
                     }
+                } else if let error = viewModel.errorMessage {
+                    Text(error)
+                        .font(of: .poppinsRegular14, with: .white.opacity(0.9))
                 }
             }
         }
+        .frame(height: 280)
+    }
+    
+    // MARK: - Menu Item
+    private func menuItem(icon: String, title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 16) {
+                Image(systemName: icon)
+                    .font(.system(size: 20))
+                    .foregroundColor(.gray)
+                    .frame(width: 24)
+                
+                Text(title)
+                    .font(of: .poppinsRegular14, with: .primary)
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.gray.opacity(0.5))
+            }
+            .padding(.horizontal)
+            .padding(.vertical)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    private func tabBarItem(icon: String, title: String, isSelected: Bool) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 24))
+                .foregroundColor(isSelected ? Color(red: 0.2, green: 0.7, blue: 0.85) : .gray)
+            
+            Text(title)
+                .font(.system(size: 11))
+                .foregroundColor(isSelected ? Color(red: 0.2, green: 0.7, blue: 0.85) : .gray)
+        }
+        .frame(maxWidth: .infinity)
     }
 }

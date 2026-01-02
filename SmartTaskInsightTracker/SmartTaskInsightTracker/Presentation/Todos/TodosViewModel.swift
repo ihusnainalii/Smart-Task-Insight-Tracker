@@ -8,5 +8,24 @@
 import SwiftUI
 
 final class TodosViewModel: ObservableObject {
-    init() {}
+
+    @Published var todos: [Todo]?
+    @Published var state: ViewState = .idle
+
+    private let fetchTodosUseCase: TodosUseCase
+
+    init(fetchTodosUseCase: TodosUseCase) {
+        self.fetchTodosUseCase = fetchTodosUseCase
+    }
+
+    @MainActor
+    func fetchTodos() async {
+        state = .loading
+        do {
+            todos = try await fetchTodosUseCase.fetchTodos()
+            state = .success
+        } catch {
+            state = .error(error.localizedDescription)
+        }
+    }
 }

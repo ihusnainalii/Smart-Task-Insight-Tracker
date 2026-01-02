@@ -11,9 +11,8 @@ struct AlbumsView: View {
     @StateObject var viewModel: AlbumsViewModel
 
     var body: some View {
-        NavigationStack {
+        VStack {
             Text("Albums")
-                .navigationTitle("Albums")
         }
     }
 }

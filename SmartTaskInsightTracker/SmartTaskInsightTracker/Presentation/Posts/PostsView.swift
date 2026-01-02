@@ -11,9 +11,8 @@ struct PostsView: View {
     @StateObject var viewModel: PostsViewModel
 
     var body: some View {
-        NavigationStack {
+        VStack {
             Text("Posts")
-                .navigationTitle("Posts")
         }
     }
 }

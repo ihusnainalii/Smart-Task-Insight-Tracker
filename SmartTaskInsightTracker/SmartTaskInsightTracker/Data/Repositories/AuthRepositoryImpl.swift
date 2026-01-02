@@ -6,9 +6,7 @@
 //
 
 enum AuthError: Error {
-    
     case noDataFound
-    
     var errorDescription: String? {
         switch self {
         case .noDataFound:
@@ -30,32 +28,27 @@ final class AuthRepositoryImpl: AuthRepository {
     }
 
     func login(with email: String) async throws {
-        do {
-            let headers: [String: String]? = await {
-                guard
-                    let userID = try? await container.sessionStore.getUserID(),
-                    let authHeader = APIConfig.Headers.authorization(with: String(userID))
-                else {
-                    return nil
-                }
-                
-                return ["Authorization": authHeader]
-            }()
-            
-            let request = DynamicAPIRequest<[UserDTO]>(
-                path: .users,
-                method: .get,
-                queryParameters: [APIConfig.Queries.email(email)],
-                headers: headers,
-            )
-            
-            if let userData = try await apiClient.request(request).first {
-                try await sessionStore.save(user: userData.toEntity())
-            } else {
-                throw AuthError.noDataFound
+        let headers: [String: String]? = await {
+            guard
+                let userID = try? await container.sessionStore.getUserID(),
+                let authHeader = APIConfig.Headers.authorization(with: String(userID))
+            else {
+                return nil
             }
-        } catch {
-            throw error
+            return ["Authorization": authHeader]
+        }()
+        
+        let request = DynamicAPIRequest<[UserDTO]>(
+            path: .users,
+            method: .get,
+            queryParameters: [APIConfig.Queries.email(email)],
+            headers: headers,
+        )
+        
+        if let userData = try await apiClient.request(request).first {
+            try? await sessionStore.save(user: userData.toEntity())
+        } else {
+            throw AuthError.noDataFound
         }
     }
 

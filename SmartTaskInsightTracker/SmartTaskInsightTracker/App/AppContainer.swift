@@ -49,6 +49,13 @@ final class AppContainer {
         )
     }()
     
+    lazy var todoRepository: TodoRepository = {
+        TodoRepositoryImpl(
+            apiClient: apiClient,
+            container: self
+        )
+    }()
+    
     // MARK: - UseCases
     lazy var loginUseCase: LoginUseCase = {
         LoginUseCaseImpl(authRepository: authRepository)
@@ -66,12 +73,13 @@ final class AppContainer {
         FetchUsersUseCaseImpl(userRepository: userRepository)
     }()
     
+    lazy var fetchTodosUseCase: TodosUseCase = {
+        TodosUseCaseImpl(repository: todoRepository)
+    }()
+    
     // MARK: - ViewModels
     func makeLoginViewModel() -> LoginViewModel {
-        LoginViewModel(
-            loginUseCase: loginUseCase,
-            getSavedUserUseCase: getSavedUserUseCase
-        )
+        LoginViewModel(loginUseCase: loginUseCase, getSavedUserUseCase: getSavedUserUseCase)
     }
     
     func makeUsersListViewModel() -> UsersListViewModel {
@@ -79,7 +87,7 @@ final class AppContainer {
     }
     
     func makeTodosViewModel() -> TodosViewModel {
-        TodosViewModel()
+        TodosViewModel(fetchTodosUseCase: fetchTodosUseCase)
     }
     
     func makePostsViewModel() -> PostsViewModel {
