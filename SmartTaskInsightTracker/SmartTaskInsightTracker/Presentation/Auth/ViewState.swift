@@ -12,4 +12,15 @@ enum ViewState: Equatable {
     case loading
     case success
     case error(String)
+    
+    var errorMessage: String? {
+        if case .error(let message) = self {
+            return message
+        }
+        return nil
+    }
+    
+    var isLoading: Bool {
+        self == .loading
+    }
 }

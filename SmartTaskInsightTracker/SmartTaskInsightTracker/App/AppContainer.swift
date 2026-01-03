@@ -80,7 +80,7 @@ final class AppContainer {
         FetchUsersUseCaseImpl(userRepository: userRepository)
     }()
     
-    lazy var fetchTodosUseCase: TodosUseCase = {
+    lazy var todosUseCase: TodosUseCase = {
         TodosUseCaseImpl(repository: todoRepository)
     }()
     
@@ -94,7 +94,7 @@ final class AppContainer {
     }
     
     func makeTodosViewModel() -> TodosViewModel {
-        TodosViewModel(fetchTodosUseCase: fetchTodosUseCase)
+        TodosViewModel(todosUseCase: todosUseCase)
     }
     
     func makePostsViewModel() -> PostsViewModel {
@@ -107,5 +107,8 @@ final class AppContainer {
     
     func makeProfileViewModel() -> ProfileViewModel {
         ProfileViewModel(getUserUseCase: getSavedUserUseCase)
+    }
+    func makeCreateTodoSheetViewModel() -> CreateTodoSheetViewModel {
+        CreateTodoSheetViewModel(createTodoUseCase: todosUseCase)
     }
 }

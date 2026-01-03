@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct CustomizeNavigation: ViewModifier {
-
+    
     var navigationTitle: String
     var enableBackButton: Bool
+    var backButtonTitle: String?
     var trailingItem: AnyView?
-
+    
     func body(
         content: Content
     ) -> some View {
@@ -48,7 +49,7 @@ struct CustomizeNavigation: ViewModifier {
             .applyIf(
                 enableBackButton
             ) { view in
-                view.customBackButton()
+                view.customBackButton(with: backButtonTitle)
             }
     }
 }
@@ -60,7 +61,19 @@ extension View {
     ) -> some View {
         self.modifier(
             CustomizeNavigation(navigationTitle: title,
-            enableBackButton: enableBackButton)
+                                enableBackButton: enableBackButton)
+        )
+    }
+    
+    func customizeNavigation(
+        with title: String,
+        enableBackButton: Bool,
+        backButtonTitle: String?
+    ) -> some View {
+        self.modifier(
+            CustomizeNavigation(navigationTitle: title,
+                                enableBackButton: enableBackButton,
+                                backButtonTitle: backButtonTitle)
         )
     }
     
@@ -69,21 +82,21 @@ extension View {
     ) -> some View {
         self.modifier(
             CustomizeNavigation(navigationTitle: title,
-            enableBackButton: true)
+                                enableBackButton: true)
         )
     }
     
     func customizeNavigation(
-            with title: String,
-            enableBackButton: Bool = true,
-            trailingItem: AnyView? = nil
-        ) -> some View {
-            self.modifier(
-                CustomizeNavigation(
-                    navigationTitle: title,
-                    enableBackButton: enableBackButton,
-                    trailingItem: trailingItem
-                )
+        with title: String,
+        enableBackButton: Bool = true,
+        trailingItem: AnyView? = nil
+    ) -> some View {
+        self.modifier(
+            CustomizeNavigation(
+                navigationTitle: title,
+                enableBackButton: enableBackButton,
+                trailingItem: trailingItem
             )
-        }
+        )
+    }
 }
