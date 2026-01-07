@@ -1,0 +1,14 @@
+# Read the docs: https://github.com/SwiftGen/SwiftGen/blob/stable/Documentation/ConfigFile.md
+
+input_dir: ${PROJECT_DIR}/SmartTaskInsightTracker/Resources
+output_dir: ${PROJECT_DIR}/SmartTaskInsightTracker/Resources/SwiftgenOutput/
+
+xcassets:
+    - inputs:
+        - Assets.xcassets
+        - Colors.xcassets
+        - Icons.xcassets
+      outputs:
+        templatePath: ${PROJECT_DIR}/SmartTaskInsightTracker/Resources/SwiftGen/stencils/xcassets-swiftui.stencil
+        output: XCAssets+Generated.swift
+
